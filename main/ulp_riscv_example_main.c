@@ -26,13 +26,6 @@ static void init_ulp_program(void);
 
 void app_main(void)
 {
-    /* Initialize selected GPIO as RTC IO, enable input, disable pullup and pulldown */
-    rtc_gpio_init(GPIO_NUM_0);
-    rtc_gpio_set_direction(GPIO_NUM_0, RTC_GPIO_MODE_INPUT_ONLY);
-    rtc_gpio_pulldown_dis(GPIO_NUM_0);
-    rtc_gpio_pullup_dis(GPIO_NUM_0);
-    rtc_gpio_hold_en(GPIO_NUM_0);
-
     esp_sleep_wakeup_cause_t cause = esp_sleep_get_wakeup_cause();
     /* not a wakeup from ULP, load the firmware */
     if (cause != ESP_SLEEP_WAKEUP_ULP) {
@@ -43,9 +36,6 @@ void app_main(void)
     /* ULP Risc-V read and detected a change in GPIO_0, prints */
     if (cause == ESP_SLEEP_WAKEUP_ULP) {
         printf("ULP-RISC-V woke up the main CPU! \n");
-        printf("ULP-RISC-V read changes in GPIO_0 current is: %s \n",
-            (bool)(ulp_gpio_level_previous == 0) ? "Low" : "High" );
-
     }
 
     /* Go back to sleep, only the ULP Risc-V will run */
@@ -54,7 +44,6 @@ void app_main(void)
     /* Small delay to ensure the messages are printed */
     vTaskDelay(100);
 
-    ESP_ERROR_CHECK( esp_sleep_enable_ulp_wakeup());
     esp_deep_sleep_start();
 }
 
@@ -66,7 +55,7 @@ static void init_ulp_program(void)
     /* The first argument is the period index, which is not used by the ULP-RISC-V timer
      * The second argument is the period in microseconds, which gives a wakeup time period of: 20ms
      */
-    ulp_set_wakeup_period(0, 20000);
+    ulp_set_wakeup_period(0, 200000);
 
     /* Start the program */
     err = ulp_riscv_run();
