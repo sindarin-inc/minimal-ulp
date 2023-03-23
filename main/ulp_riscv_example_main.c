@@ -44,6 +44,8 @@ void app_main(void)
     /* Small delay to ensure the messages are printed */
     vTaskDelay(100);
 
+    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_ON);
+
     esp_deep_sleep_start();
 }
 
