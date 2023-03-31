@@ -11,6 +11,7 @@
 #include "esp_sleep.h"
 #include "soc/rtc_cntl_reg.h"
 #include "soc/sens_reg.h"
+#include <esp_adc/adc_oneshot.h>
 #include "soc/rtc_periph.h"
 #include "driver/gpio.h"
 #include "driver/rtc_io.h"
@@ -26,6 +27,19 @@ static void init_ulp_program(void);
 
 void app_main(void)
 {
+    // If you configure the ADC before sleeping, you'll burn ~1.3mA of power while in deep sleep.
+//     adc_oneshot_unit_init_cfg_t adcOneshotCfg;
+//     adc_oneshot_unit_handle_t adcOneshotHandle;
+//     adcOneshotCfg.unit_id = ADC_UNIT_1;
+// #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 1, 0)
+//     adcOneshotCfg.clk_src = TIMER_SRC_CLK_APB;
+// #endif
+//     adcOneshotCfg.ulp_mode = ADC_ULP_MODE_DISABLE;
+//     ESP_ERROR_CHECK(adc_oneshot_new_unit(&adcOneshotCfg, &adcOneshotHandle));
+
+    // But if you release the ADC before sleeping, then you'll be back to the expected ~25uA during deep sleep.
+    // ESP_ERROR_CHECK(adc_oneshot_del_unit(adcOneshotHandle));
+
     esp_sleep_wakeup_cause_t cause = esp_sleep_get_wakeup_cause();
     /* not a wakeup from ULP, load the firmware */
     if (cause != ESP_SLEEP_WAKEUP_ULP) {

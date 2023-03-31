@@ -20,7 +20,7 @@ int main (void)
 {
     // while(1) {
     // }
-    for(int i =0; i<100000000; i++) {}
+    for(int i = 0; i<100000000; i++) {}
     /* ulp_riscv_halt() is called automatically when main exits */
     return 0;
 }
