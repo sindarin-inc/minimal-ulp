@@ -57,7 +57,7 @@ static void init_ulp_program(void)
     /* The first argument is the period index, which is not used by the ULP-RISC-V timer
      * The second argument is the period in microseconds, which gives a wakeup time period of: 20ms
      */
-    ulp_set_wakeup_period(0, 200000);
+    ulp_set_wakeup_period(0, 1000000);
 
     /* Start the program */
     err = ulp_riscv_run();
